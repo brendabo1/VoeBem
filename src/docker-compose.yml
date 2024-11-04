@@ -48,21 +48,29 @@ services:
       - ./compartilhado:/app/compartilhado  # Volume compartilhado
     networks:
       - rede_passcom
-  
+      
   cliente:
     build:
       context: ./cliente
-      dockerfile: Dockerfile
-    environment:
-      - SERVERS=server1:5001,server2:5002,server3:5003
-    depends_on:
-      - servidorA
-      - servidorB
-      - servidorC
+    container_name: cliente
+    ports:
+      - "3000:80"  # Porta do cliente React sendo servida pelo Nginx
     networks:
-      - flight_network
-    stdin_open: true  # para manter o terminal interativo aberto
-    tty: true         # permite a interação com o usuário
+      - rede_passcom
+  # cliente:
+  #   build:
+  #     context: ./cliente
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - SERVERS=server1:5001,server2:5002,server3:5003
+  #   depends_on:
+  #     - servidorA
+  #     - servidorB
+  #     - servidorC
+  #   networks:
+  #     - flight_network
+  #   stdin_open: true  # para manter o terminal interativo aberto
+  #   tty: true         # permite a interação com o usuário
 
 networks:
   rede_passcom:
