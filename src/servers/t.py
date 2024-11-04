@@ -5,7 +5,7 @@ import requests
 import logging
 import os
 import time
-from raft_algorithm import RaftNode
+from raft_algoritmo import RaftNode
 
 app = Flask(__name__)
 

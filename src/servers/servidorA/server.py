@@ -1,94 +1,94 @@
 from flask import Flask, request, jsonify
 import json
 import threading
+import requests
 import logging
+import os
+import time
+from raft_algoritmo import RaftNode
 
 app = Flask(__name__)
-lock = threading.Lock()
 
-# Carrega o grafo de rotas desta companhia a partir do JSON
-with open('rotas.json', 'r') as f:
-    grafo_rotas = json.load(f)
+# Caminhos para arquivos
+USUARIOS_FILE = 'usuarios.json'
+ROUTES_FILE = 'rotas.json'
 
-# Configuração de logs
+# Configurações do Raft
+server_id = os.getenv("SERVER_ID")
+outros_servidores = os.getenv("OUTROS_SERVIDORES").split(",")
+raft_node = RaftNode(server_id=server_id, peers=outros_servidores)
+
+# Configuração de log
 logging.basicConfig(filename="server.log", level=logging.INFO, format="%(asctime)s - %(message)s")
 
-# Estado de consenso e transação
-estado_raft = {'lider': None, 'eleicao': False}
-transacoes_pendentes = {}
+# Funções de manipulação de usuários
+def carregar_usuarios():
+    with open(USUARIOS_FILE, 'r') as f:
+        return json.load(f)
 
-# Endpoint para verificação de saúde
-@app.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({"status": "healthy"}), 200
+def salvar_usuarios(usuarios):
+    with open(USUARIOS_FILE, 'w') as f:
+        json.dump(usuarios, f, indent=4)
 
-# Função para eleger um líder usando o Raft
-def eleger_lider():
-    with lock:
-        logging.info("Iniciando eleição de líder")
-        estado_raft['eleicao'] = True
-        # Simplificação do processo de eleição
-        # Aqui, assume-se que o servidor atual é o líder para fins de implementação
-        estado_raft['lider'] = "servidor_atual"
-        estado_raft['eleicao'] = False
-        logging.info(f"Líder eleito: {estado_raft['lider']}")
+# Função de login
+@app.route('/login', methods=['POST'])
+def login():
+    dados = request.json
+    user_id = dados.get("id")
+    senha = dados.get("senha")
 
-# Função para iniciar uma reserva com protocolo 3PC
-def iniciar_reserva(dados_reserva):
-    logging.info("Iniciando transação de reserva")
-    transacao_id = dados_reserva.get("id")
-    with lock:
-        if transacao_id in transacoes_pendentes:
-            return False  # Transação já está em andamento
-        transacoes_pendentes[transacao_id] = "prepare"
-    # Fase de preparação
-    if preparar_reserva(dados_reserva):
-        # Se a preparação for bem-sucedida, procede para commit
-        transacoes_pendentes[transacao_id] = "commit"
-        commit_reserva(dados_reserva)
-    else:
-        transacoes_pendentes[transacao_id] = "abort"
-        abortar_reserva(dados_reserva)
+    usuarios = carregar_usuarios()
+    for usuario in usuarios:
+        if usuario["id"] == user_id and usuario["senha"] == senha:
+            return jsonify({"message": "Login bem-sucedido"}), 200
+    return jsonify({"message": "ID ou senha incorretos"}), 401
 
-# Função para preparação de reserva (fase 1 do 3PC)
-def preparar_reserva(dados_reserva):
-    logging.info("Preparando reserva")
-    # Confirmação de disponibilidade dos assentos
-    for trecho in dados_reserva["trechos"]:
-        if not grafo_rotas.get(trecho['origem'], {}).get(trecho['destino']):
-            logging.warning(f"Trecho indisponível: {trecho}")
-            return False
-    return True
+# Supergrafo de rotas
+def atualizar_supergrafo():
+    supergrafo = {}
+    for servidor in outros_servidores:
+        try:
+            response = requests.get(f"http://{servidor}/grafo_rotas")
+            if response.status_code == 200:
+                grafo_outra_companhia = response.json()
+                supergrafo.update(grafo_outra_companhia)
+                logging.info(f"Supergrafo atualizado com rotas de {servidor}")
+        except requests.RequestException as e:
+            logging.error(f"Erro ao acessar {servidor}: {e}")
+    return supergrafo
 
-# Função de commit de reserva (fase 2 do 3PC)
-def commit_reserva(dados_reserva):
-    logging.info("Confirmando reserva")
-    for trecho in dados_reserva["trechos"]:
-        voo = grafo_rotas[trecho['origem']][trecho['destino']][0]
-        for assento in voo["assentos"]:
-            if assento["cod"] in trecho["assentos"] and assento["avaliable"]:
-                assento["avaliable"] = False
-            else:
-                abortar_reserva(dados_reserva)
-                return
-    logging.info("Reserva confirmada")
+@app.route('/listar_supergrafo', methods=['GET'])
+def listar_supergrafo():
+    supergrafo = atualizar_supergrafo()
+    return jsonify(supergrafo)
 
-# Função de abortar reserva (fase de rollback do 3PC)
-def abortar_reserva(dados_reserva):
-    logging.warning("Abortando reserva")
-    # Implementação do rollback pode ser detalhada conforme necessário
+# Reserva de assentos
+@app.route('/reservar_assentos', methods=['POST'])
+def reservar_assentos():
+    data = request.json
+    origem = data['origem']
+    destino = data['destino']
+    assentos = data['assentos']
+    supergrafo = atualizar_supergrafo()
 
-@app.route('/reservar', methods=['POST'])
-def reservar_assento():
-    dados_reserva = request.get_json()
-    threading.Thread(target=iniciar_reserva, args=(dados_reserva,)).start()
-    return jsonify({"status": "Processando reserva"}), 202
+    # Realizar reserva de assentos com lock distribuído
+    return jsonify({"status": "Reserva realizada com sucesso"}), 200
 
-@app.route('/listar_rotas', methods=['GET'])
-def listar_rotas():
-    return jsonify(grafo_rotas)
+# Endpoints do Raft
+@app.route('/request_vote', methods=['POST'])
+def request_vote():
+    data = request.json
+    response = raft_node.handle_request_vote(data["term"], data["candidate_id"])
+    return jsonify(response)
 
+@app.route('/heartbeat', methods=['POST'])
+def heartbeat():
+    data = request.json
+    response = raft_node.handle_heartbeat(data["term"], data["leader_id"])
+    return jsonify(response)
+
+# Início do servidor
 if __name__ == '__main__':
-    eleger_lider()  # Inicia o processo de eleição ao iniciar o servidor
-    app.run(host='0.0.0.0', port=5001)  # Porta será alterada conforme o servidor
-
+    port = int(os.getenv("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+    # app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))

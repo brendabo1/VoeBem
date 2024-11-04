@@ -16,7 +16,7 @@ RUN pip install flask requests
 # RUN pip install -r requirements.txt
 
 # Expõe a porta do servidor (ajuste conforme a configuração do servidor)
-EXPOSE 5001
+EXPOSE 5000
 
 # Comando para iniciar o servidor (ajuste conforme necessário)
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5001", "server:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "server:app"]

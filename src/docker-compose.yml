@@ -8,12 +8,11 @@ services:
       dockerfile: Dockerfile
     environment:
       - SERVER_ID=servidorA
-      - PORT=5001
-      - OUTROS_SERVIDORES=servidor_B:5002,servidor_C:5003
+      - PORT=5000
+      - OUTROS_SERVIDORES=servidorB:5002,servidorC:5003
     ports:
-      - "5001:5001"
-    volumes:
-      - ./compartilhado:/app/compartilhado  # Volume compartilhado
+      - "5000:5000":
+      # - "5001:5001"
     networks:
       - rede_passcom
 
@@ -25,11 +24,9 @@ services:
     environment:
       - SERVER_ID=servidorB
       - PORT=5002
-      - OUTROS_SERVIDORES=servidor_A:5001,servidor_C:5003
+      - OUTROS_SERVIDORES=servidorA:5000,servidorC:5003
     ports:
       - "5002:5002"
-    volumes:
-      - ./compartilhado:/app/compartilhado  # Volume compartilhado
     networks:
       - rede_passcom
       
@@ -41,36 +38,30 @@ services:
     environment:
       - SERVER_ID=servidorC
       - PORT=5003
-      - OUTROS_SERVIDORES=server1:5001,server2:5002
+      - OUTROS_SERVIDORES=servidorA:5000,servidorB:5002
     ports:
       - "5003:5003"
-    volumes:
-      - ./compartilhado:/app/compartilhado  # Volume compartilhado
     networks:
       - rede_passcom
       
+  
   cliente:
     build:
       context: ./cliente
-    container_name: cliente
+      dockerfile: Dockerfile
+    environment:
+      - REACT_APP_API_URL=http://servidorA:5000  # URL para acessar o servidor principal
     ports:
-      - "3000:80"  # Porta do cliente React sendo servida pelo Nginx
+      - "3000:3000"  # Porta exposta para acessar o front-end do cliente
+    depends_on:
+      - servidorA
+      - servidorB
+      - servidorC
     networks:
       - rede_passcom
-  # cliente:
-  #   build:
-  #     context: ./cliente
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     - SERVERS=server1:5001,server2:5002,server3:5003
-  #   depends_on:
-  #     - servidorA
-  #     - servidorB
-  #     - servidorC
-  #   networks:
-  #     - flight_network
-  #   stdin_open: true  # para manter o terminal interativo aberto
-  #   tty: true         # permite a interação com o usuário
+    stdin_open: true  # para manter o terminal interativo aberto
+    tty: true         # permite a interação com o usuário
+
 
 networks:
   rede_passcom:
