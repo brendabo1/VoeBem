@@ -1,0 +1,238 @@
+{
+    "FEC": {        
+        "LEC": [
+            {
+                "voo": "Voo CT654",
+                "assentos": [
+                    {
+                        "cod": "1A",
+                        "avaliable": true
+                    },
+                    {
+                        "cod": "1B",
+                        "avaliable": true
+                    },
+                    {
+                        "cod": "2A",
+                        "avaliable": true
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "25m",
+                "avaliable": true
+            }
+        ]        
+    },
+    "VDC": {        
+        "TXF": [
+            {
+                "voo": "Voo CE108",
+                "assentos": [
+                    {
+                        "cod": "1A",
+                        "avaliable": true
+                    },
+                    {
+                        "cod": "1B",
+                        "avaliable": true
+                    },
+                    {
+                        "cod": "2A",
+                        "avaliable": false
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "35m",
+                "avaliable": true
+            }
+        ],
+        "GNM": [
+            {
+                "voo": "Voo CS934",
+                "assentos": [
+                    {
+                        "cod": "1A",
+                        "avaliable": true
+                    },
+                    {
+                        "cod": "1B",
+                        "avaliable": true
+                    },
+                    {
+                        "cod": "2A",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "2B",
+                        "avaliable": false
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "25m",
+                "avaliable": true
+            }
+        ]
+    },
+    "LEC": {        
+        "FEC": [
+            {
+                "voo": "Voo CB445",
+                "assentos": [
+                    {
+                        "cod": "1A",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "1B",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "2A",
+                        "avaliable": true
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "25m",
+                "avaliable": true
+            }
+        ]
+    },
+    "PAV": {        
+        "BRA": [
+            {
+                "voo": "Voo CR217",
+                "assentos": [
+                    {
+                        "cod": "1A",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "1B",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "2A",
+                        "avaliable": true
+                    },
+                    {
+                        "cod": "2B",
+                        "avaliable": true
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "55m",
+                "avaliable": true
+            }
+        ]
+    },
+    "VAL": {        
+        "IOS": [
+            {
+                "voo": "Voo CN576",
+                "assentos": [
+                    {
+                        "cod": "1A",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "1B",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "2A",
+                        "avaliable": true
+                    },
+                    {
+                        "cod": "2B",
+                        "avaliable": true
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "25m",
+                "avaliable": true
+            }
+        ],
+        "TXF": [
+            {
+                "voo": "Voo CB801",
+                "assentos": [
+                    {
+                        "cod": "1A",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "1B",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "2A",
+                        "avaliable": true
+                    },
+                    {
+                        "cod": "2B",
+                        "avaliable": true
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "1h05m",
+                "avaliable": true
+            }
+        ]
+    },
+    "IOS": {        
+        "VAL": [
+            {
+                "voo": "Voo CF710",
+                "assentos": [
+                    {
+                        "cod": "1A",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "1B",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "2A",
+                        "avaliable": true
+                    },
+                    {
+                        "cod": "2B",
+                        "avaliable": true
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "25m",
+                "avaliable": true
+            }
+        ]
+    },
+    "TXF": {        
+        "IOS": [
+            {
+                "voo": "Voo CG432",
+                "assentos": [
+                    {
+                        "cod": "1A",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "1B",
+                        "avaliable": false
+                    },
+                    {
+                        "cod": "2A",
+                        "avaliable": true
+                    },
+                    {
+                        "cod": "2B",
+                        "avaliable": true
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "35m",
+                "avaliable": true
+            }
+        ]
+    }       
+}

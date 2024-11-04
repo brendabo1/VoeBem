@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  servidorA:
+    build:
+      context: ./servers/servidorA
+      container_name: servidorA
+      dockerfile: Dockerfile
+    environment:
+      - SERVER_ID=servidorA
+      - PORT=5001
+      - OUTROS_SERVIDORES=servidor_B:5002,servidor_C:5003
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./compartilhado:/app/compartilhado  # Volume compartilhado
+    networks:
+      - rede_passcom
+
+  servidorB:
+    build:
+      context: ./servers/servidorB
+      container_name: servidorB
+      dockerfile: Dockerfile
+    environment:
+      - SERVER_ID=servidorB
+      - PORT=5002
+      - OUTROS_SERVIDORES=servidor_A:5001,servidor_C:5003
+    ports:
+      - "5002:5002"
+    volumes:
+      - ./compartilhado:/app/compartilhado  # Volume compartilhado
+    networks:
+      - rede_passcom
+      
+  servidorC:
+    build:
+      context: ./servers/servidorC
+      container_name: servidorC
+      dockerfile: Dockerfile
+    environment:
+      - SERVER_ID=servidorC
+      - PORT=5003
+      - OUTROS_SERVIDORES=server1:5001,server2:5002
+    ports:
+      - "5003:5003"
+    volumes:
+      - ./compartilhado:/app/compartilhado  # Volume compartilhado
+    networks:
+      - rede_passcom
+  
+  cliente:
+    build:
+      context: ./cliente
+      dockerfile: Dockerfile
+    environment:
+      - SERVERS=server1:5001,server2:5002,server3:5003
+    depends_on:
+      - servidorA
+      - servidorB
+      - servidorC
+    networks:
+      - flight_network
+    stdin_open: true  # para manter o terminal interativo aberto
+    tty: true         # permite a interação com o usuário
+
+networks:
+  rede_passcom:
+    driver: bridge
