@@ -15,6 +15,24 @@ export const login = async (id, senha) => {
     }
 };
 
+export const buscarRotas = async (origem, destino) => {
+    try {
+        const response = await axios.post(`${API_URL}/buscar_rotas`, { origem, destino });
+        return response.data.rotas;
+    } catch (error) {
+        throw new Error("Erro ao buscar rotas");
+    }
+};
+
+export const comprarPassagem = async (user_id, trechos) => {
+    try {
+        const response = await axios.post(`${API_URL}/comprar_passagem`, { user_id, trechos });
+        return response.data.message;
+    } catch (error) {
+        throw new Error(error.response.data.message || "Erro ao comprar passagem");
+    }
+};
+
 export const listarSupergrafo = () => {
     return axios.get(`${API_URL}/listar_supergrafo`);
 };

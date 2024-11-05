@@ -1,68 +1,112 @@
-version: '3.8'
-
 services:
-  servidorA:
+
+  servidor_a:
     build:
-      context: ./servers/servidorA
-      container_name: servidorA
+      context: ./servers/servidor_a
       dockerfile: Dockerfile
-    environment:
-      - SERVER_ID=servidorA
-      - PORT=5000
-      - OUTROS_SERVIDORES=servidorB:5002,servidorC:5003
     ports:
-      - "5000:5000":
-      # - "5001:5001"
+      - "5000:5000"
+    environment:
+      - SERVER_ID=servidor_a
     networks:
       - rede_passcom
 
-  servidorB:
+  servidor_b:
     build:
-      context: ./servers/servidorB
-      container_name: servidorB
+      context: ./servers/servidor_b
       dockerfile: Dockerfile
-    environment:
-      - SERVER_ID=servidorB
-      - PORT=5002
-      - OUTROS_SERVIDORES=servidorA:5000,servidorC:5003
     ports:
       - "5002:5002"
+    environment:
+      - SERVER_ID=servidor_b
     networks:
       - rede_passcom
-      
-  servidorC:
+
+  servidor_c:
     build:
-      context: ./servers/servidorC
-      container_name: servidorC
+      context: ./servers/servidor_c
       dockerfile: Dockerfile
-    environment:
-      - SERVER_ID=servidorC
-      - PORT=5003
-      - OUTROS_SERVIDORES=servidorA:5000,servidorB:5002
     ports:
       - "5003:5003"
-    networks:
-      - rede_passcom
-      
-  
-  cliente:
-    build:
-      context: ./cliente
-      dockerfile: Dockerfile
     environment:
-      - REACT_APP_API_URL=http://servidorA:5000  # URL para acessar o servidor principal
-    ports:
-      - "3000:3000"  # Porta exposta para acessar o front-end do cliente
-    depends_on:
-      - servidorA
-      - servidorB
-      - servidorC
+      - SERVER_ID=servidor_c
     networks:
       - rede_passcom
-    stdin_open: true  # para manter o terminal interativo aberto
-    tty: true         # permite a interação com o usuário
 
+  client-react:
+    build:
+      context: ./client-react
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_URL=http://servidor_a:5000
+    networks:
+      - rede_passcom
 
 networks:
   rede_passcom:
     driver: bridge
+
+
+# services:
+#   servidor_a:
+#     build:
+#       context: ./servers/servidor_a
+#       dockerfile: Dockerfile
+#     environment:
+#       - SERVER_ID=servidor_a
+#       - PORT=5000
+#       - OUTROS_SERVIDORES=servidor_b:5002,servidor_c:5003
+#     ports:
+#       - "5000:5000"
+#     networks:
+#       - rede_passcom
+
+#   servidor_b:
+#     build:
+#       context: ./servers/servidor_b
+#       dockerfile: Dockerfile
+#     environment:
+#       - SERVER_ID=servidor_b
+#       - PORT=5002
+#       - OUTROS_SERVIDORES=servidor_a:5000,servidor_c:5003
+#     ports:
+#       - "5002:5002"
+#     networks:
+#       - rede_passcom
+
+#   servidor_c:
+#     build:
+#       context: ./servers/servidor_c
+#       dockerfile: Dockerfile
+#     environment:
+#       - SERVER_ID=servidor_c
+#       - PORT=5003
+#       - OUTROS_SERVIDORES=servidor_a:5000,servidor_b:5002
+#     ports:
+#       - "5003:5003"
+#     networks:
+#       - rede_passcom
+
+#   client-react:
+#     build:
+#       context: ./client-react
+#       dockerfile: Dockerfile
+#     environment:
+#       - REACT_APP_API_URL=http://servidor_a:5000
+#       # - REACT_APP_API_URL=servidor_a:5000,servidor_b:5002,servidor_c:5003
+#     depends_on:
+#       - servidor_a
+#       # - servidor_b
+#       # - servidor_c
+#     ports:
+#     - "3000:80"
+#     networks:
+#       - rede_passcom
+#     stdin_open: true  # mantém o terminal interativo aberto
+#     tty: true         # permite interação com o cliente via terminal
+
+# networks:
+#   rede_passcom:
+#     driver: bridge

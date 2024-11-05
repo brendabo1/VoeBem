@@ -7,13 +7,11 @@ WORKDIR /app
 # Copia os arquivos do servidor e o requirements.txt
 COPY server.py .
 COPY rotas.json .
-COPY ../compartilhado /app/compartilhado
-# COPY requirements.txt .
-#COPY . .
-# Instala dependências
-# COPY requirements.txt requirements.txt
-RUN pip install flask requests
-# RUN pip install -r requirements.txt
+COPY raft_algoritmo.py .
+COPY usuarios.json .
+
+
+RUN pip install flask requests gunicorn flask_cors
 
 # Expõe a porta do servidor (ajuste conforme a configuração do servidor)
 EXPOSE 5000

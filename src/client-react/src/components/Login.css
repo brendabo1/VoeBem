@@ -16,18 +16,18 @@
 
 .login-box {
     background-color: #007bff; /* Fundo azul */
-    padding: 30px;
+    padding: 2rem;
     border-radius: 8px;
     width: 100%;
     max-width: 400px;
     color: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
 }
 
-h2 {
-    text-align: center;
-    color: white;
+.login-box h2 {
     margin-bottom: 20px;
+    color: white;
 }
 
 .form-group label {
@@ -37,4 +37,13 @@ h2 {
 .form-control {
     margin-top: 5px;
     margin-bottom: 15px;
+}
+
+.btn-primary {
+    background-color: #0056b3;
+    border: none;
+}
+
+.text-danger {
+    margin-top: 10px;
 }

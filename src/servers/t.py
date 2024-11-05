@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 # Caminhos para arquivos
 USUARIOS_FILE = 'usuarios.json'
-ROUTES_FILE = 'rotas.json'
+ROTAS_FILE = 'rotas.json'
 
 # Configurações do Raft
 server_id = os.getenv("SERVER_ID")
@@ -30,6 +30,15 @@ def salvar_usuarios(usuarios):
     with open(USUARIOS_FILE, 'w') as f:
         json.dump(usuarios, f, indent=4)
 
+# Carregar rotas
+def carregar_rotas():
+    with open(ROTAS_FILE, 'r') as f:
+        return json.load(f)
+
+def salvar_rotas(rotas):
+    with open(ROTAS_FILE, 'w') as f:
+        json.dump(rotas, f, indent=4)
+
 # Função de login
 @app.route('/login', methods=['POST'])
 def login():
@@ -42,6 +51,12 @@ def login():
         if usuario["id"] == user_id and usuario["senha"] == senha:
             return jsonify({"message": "Login bem-sucedido"}), 200
     return jsonify({"message": "ID ou senha incorretos"}), 401
+
+# Endpoint GET /grafo_rotas
+@app.route('/grafo_rotas', methods=['GET'])
+def get_grafo_rotas():
+    rotas = carregar_rotas()
+    return jsonify(rotas), 200
 
 # Supergrafo de rotas
 def atualizar_supergrafo():
@@ -61,6 +76,18 @@ def atualizar_supergrafo():
 def listar_supergrafo():
     supergrafo = atualizar_supergrafo()
     return jsonify(supergrafo)
+
+# Função para anexar reserva ao usuário
+def anexar_pedido_usuario(user_id, reserva, arquivo_usuarios):
+    usuarios = carregar_usuarios()
+    for usuario in usuarios:
+        if usuario["id"] == user_id:
+            if "reservas" not in usuario:
+                usuario["reservas"] = []
+            usuario["reservas"].append(reserva)
+            salvar_usuarios(usuarios)
+            return
+    # Se usuário não encontrado, opcionalmente adicionar ou retornar erro
 
 # Reserva de assentos
 @app.route('/reservar_assentos', methods=['POST'])
