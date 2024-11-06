@@ -12,13 +12,20 @@ app = Flask(__name__)
 CORS(app) 
 
 # Caminhos para arquivos
-USUARIOS_FILE = 'usuarios.json'
-ROTAS_FILE = 'rotas.json'
+USUARIOS_FILE = "data/usuarios.json"
+ROTAS_FILE = "data/rotas.json"
+
+server_id = "Servidor_C"
+peers = [
+    os.getenv("SERVIDOR_A"),
+    os.getenv("SERVIDOR_B"),
+    os.getenv("SERVIDOR_C")
+]
 
 # Configurações do Raft
-server_id = os.getenv("SERVER_ID")
-outros_servidores = os.getenv("OUTROS_SERVIDORES").split(",")
-raft_node = RaftNode(server_id=server_id, peers=outros_servidores)
+# server_id = os.getenv("SERVER_ID")
+# outros_servidores = os.getenv("OUTROS_SERVIDORES").split(",")
+# raft_node = RaftNode(server_id=server_id, peers=outros_servidores)
 
 # Configuração de log
 logging.basicConfig(filename="server.log", level=logging.INFO, format="%(asctime)s - %(message)s")
@@ -86,62 +93,76 @@ def get_grafo_rotas():
 #             logging.error(f"Erro ao acessar {servidor}: {e}")
 #     return supergrafo
 
-# # Função para construir supergrafo
-# def construir_supergrafo(origem, destino):
-#     supergrafo = {}
-#     rotas_local = carregar_rotas()
-#     supergrafo.update(rotas_local)
-    
-#     for peer in raft_node.peers:
-#         try:
-#             response = requests.get(f"http://{peer}/grafo_rotas")
-#             if response.status_code == 200:
-#                 rotas_peer = response.json()
-#                 supergrafo.update(rotas_peer)
-#         except requests.RequestException as e:
-#             logging.error(f"Erro ao obter grafo de {peer}: {e}")
-#     return supergrafo
+def obter_grafos(peers):
+    grafos = {}
+    for peer in peers:
+        try:
+            response = requests.get(f"http://{peer}/grafo_rotas")
+            if response.status_code == 200:
+                grafos[peer] = response.json()
+            else:
+                logging.error(f"Erro ao obter grafo de {peer}: Status {response.status_code}")
+        except requests.RequestException as e:
+            logging.error(f"Erro ao conectar com o servidor {peer}: {e}")
+    return grafos
 
-# def buscar_rotas(origem, destino, rotas):
-#     caminhos = []
-#     def dfs(current, target, path, visited):
-#         if current == target:
-#             caminhos.append(list(path))
-#             return
-#         if current not in rotas:
-#             return
-#         for next_dest, voos in rotas[current].items():
-#             if next_dest in visited:
-#                 continue
-#             for voo in voos:
-#                 if voo['avaliable']:
-#                     path.append({"voo": voo['voo'], "duracao": voo['duracao'], "next_dest": next_dest, "servidor": server_id})
-#                     visited.add(next_dest)
-#                     dfs(next_dest, target, path, visited)
-#                     path.pop()
-#                     visited.remove(next_dest)
-#     dfs(origem, destino, [], set([origem]))
-#     return caminhos
 
-# # @app.route('/listar_supergrafo', methods=['GET'])
-# # def listar_supergrafo():
-# #     supergrafo = atualizar_supergrafo()
-# #     return jsonify(supergrafo)
+def buscar_rotas(origem, destino, rotas):
+    caminhos = []
+    def dfs(current, target, path, visited):
+        if current == target:
+            caminhos.append(list(path))
+            return
+        if current not in rotas:
+            return
+        for next_dest, voos in rotas[current].items():
+            if next_dest in visited:
+                continue
+            for voo in voos:
+                if voo['avaliable']:
+                    path.append({"voo": voo['voo'], "duracao": voo['duracao'], "next_dest": next_dest, "servidor": server_id})
+                    visited.add(next_dest)
+                    dfs(next_dest, target, path, visited)
+                    path.pop()
+                    visited.remove(next_dest)
+    dfs(origem, destino, [], set([origem]))
+    return caminhos
 
-# # Endpoint POST /buscar_rotas
-# @app.route('/buscar_rotas', methods=['POST'])
-# def buscar_rotas_api():
-#     dados = request.json
-#     origem = dados.get('origem')
-#     destino = dados.get('destino')
+@app.route('/supergrafo', methods=['GET'])
+def get_supergrafo():
+    try:
+        local_rotas = carregar_rotas()  # Carrega rotas locais do servidor
+        peers = ["servidor_a:5000", "servidor_b:5001", "servidor_c:5003"]  # Lista de peers (outros servidores)
+
+        # Obtém os grafos das companhias
+        grafos_peers = obter_grafos(peers)
+
+        # Monta a lista de grafos (inclui o grafo local)
+        grafos_companhias = [local_rotas] + list(grafos_peers.values())
+
+        # Constrói o supergrafo a partir dos grafos das companhias
+        supergrafo = construir_supergrafo(grafos_companhias)
+
+        return jsonify({"supergrafo": supergrafo}), 200
+    except Exception as e:
+        logging.error(f"Erro ao construir supergrafo: {e}")
+        return jsonify({"message": "Erro interno ao construir o supergrafo."}), 500
+
+
+# Endpoint POST /buscar_rotas
+@app.route('/buscar_rotas', methods=['POST'])
+def buscar_rotas_api():
+    dados = request.json
+    origem = dados.get('origem')
+    destino = dados.get('destino')
     
-#     if not origem or not destino:
-#         return jsonify({"message": "Origem e destino são necessários."}), 400
+    if not origem or not destino:
+        return jsonify({"message": "Origem e destino são necessários."}), 400
     
-#     supergrafo = construir_supergrafo(origem, destino)
-#     rotas = buscar_rotas(origem, destino, supergrafo)
+    supergrafo = construir_supergrafo(origem, destino)
+    rotas = buscar_rotas(origem, destino, supergrafo)
     
-#     return jsonify({"rotas": rotas}), 200
+    return jsonify({"rotas": rotas}), 200
 
 # # Função para atualizar a disponibilidade do voo
 # def atualizar_disponibilidade_voo(rotas, origem, destino, voo_selecionado):
@@ -363,5 +384,5 @@ def get_grafo_rotas():
 # Início do servidor
 if __name__ == '__main__':
     #port = int(os.getenv("PORT", 5003))
-    app.run(host="0.0.0.0", port=5003)
+    app.run(host="0.0.0.0", port=5003, debug=True)
     # app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))

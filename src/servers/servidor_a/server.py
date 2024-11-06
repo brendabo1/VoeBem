@@ -4,9 +4,10 @@ import threading
 import requests
 import logging
 import os
-import time
+from dotenv import load_dotenv
 from raft_algoritmo import RaftNode
 from flask_cors import CORS
+import networkx as nx
 
 app = Flask(__name__)
 CORS(app) 
@@ -16,17 +17,22 @@ USUARIOS_FILE = "data/usuarios.json"
 ROTAS_FILE = "data/rotas.json"
 
 # Configurações do Raft
-server_id = os.getenv("SERVER_ID")
+server_id = "Servidor_A"
+
+load_dotenv()
+
+# Recupera as variáveis de ambiente
+servidor_a = os.getenv('SERVIDOR_A')
+servidor_b = os.getenv('SERVIDOR_B')
+servidor_c = os.getenv('SERVIDOR_C')
+
+peers = [servidor_a, servidor_b, servidor_c]
+#server_id = os.getenv("SERVER_ID")
 #outros_servidores = os.getenv("OUTROS_SERVIDORES").split(",")
 #raft_node = RaftNode(server_id=server_id, peers=outros_servidores)
 
 # Configuração de log
 logging.basicConfig(filename="server.log", level=logging.INFO, format="%(asctime)s - %(message)s")
-
-# Funções de manipulação de usuários
-# def carregar_usuarios():
-#     with open(USUARIOS_FILE, 'r') as f:
-#         return json.load(f)
 
 def salvar_usuarios(usuarios):
     with open(USUARIOS_FILE, 'w') as f:
@@ -68,19 +74,6 @@ def login():
     return jsonify({"message": "ID ou senha incorretos"}), 401
 
 
-# # Função de login
-# @app.route('/login', methods=['POST'])
-# def login():
-#     dados = request.json
-#     user_id = dados.get("id")
-#     senha = dados.get("senha")
-
-#     usuarios = carregar_usuarios()
-#     for usuario in usuarios:
-#         if usuario["id"] == user_id and usuario["senha"] == senha:
-#             return jsonify({"message": "Login bem-sucedido"}), 200
-#     return jsonify({"message": "ID ou senha incorretos"}), 401
-
 # Função para anexar o pedido ao usuário
 def anexar_pedido_usuario(user_id, reserva, arquivo_usuarios):
     usuarios = carregar_usuarios()
@@ -98,76 +91,148 @@ def get_grafo_rotas():
     rotas = carregar_rotas()
     return jsonify(rotas), 200
 
-# Supergrafo de rotas
-def atualizar_supergrafo():
-    supergrafo = {}
-    for servidor in outros_servidores:
+
+def obter_grafos(peers):
+    grafos = {}
+    for peer in peers:
         try:
-            response = requests.get(f"http://{servidor}/grafo_rotas")
+            response = requests.get(f"http://{peer}/grafo_rotas")
             if response.status_code == 200:
-                grafo_outra_companhia = response.json()
-                supergrafo.update(grafo_outra_companhia)
-                logging.info(f"Supergrafo atualizado com rotas de {servidor}")
+                grafos[peer] = response.json()
+            else:
+                logging.error(f"Erro ao obter grafo de {peer}: Status {response.status_code}")
         except requests.RequestException as e:
-            logging.error(f"Erro ao acessar {servidor}: {e}")
-    return supergrafo
+            logging.error(f"Erro ao conectar com o servidor {peer}: {e}")
+    return grafos
+
+
+def construir_grafo_from_file(dicionario_rotas):
+    # Inicializa um grafo direcionado
+    G = nx.DiGraph()
+
+    # Itera sobre as origens no dicionário
+    for origem, destinos in dicionario_rotas.items():
+        # Itera sobre cada destino e seus voos
+        for destino, voos in destinos.items():
+            for voo in voos:
+                # Adiciona uma aresta com os dados do voo
+                G.add_edge(
+                    origem, 
+                    destino, 
+                    voo=voo['voo'], 
+                    companhia=voo['companhia'],
+                    duracao=voo['duracao'],
+                    avaliable=voo['avaliable'],
+                    assentos=voo['assentos']
+                )
+    return G
+
+def grafo_para_dicionario(grafo):
+    dicionario_rotas = {}
+
+    # Itera sobre todas as arestas do grafo e organiza no formato desejado
+    for origem, destino, dados in grafo.edges(data=True):
+        if origem not in dicionario_rotas:
+            dicionario_rotas[origem] = {}
+        if destino not in dicionario_rotas[origem]:
+            dicionario_rotas[origem][destino] = []
+        
+        # Adiciona os dados do voo no formato desejado
+        dicionario_rotas[origem][destino].append({
+            "voo": dados["voo"],
+            "assentos": dados["assentos"],
+            "companhia": dados["companhia"],
+            "duracao": dados["duracao"],
+            "avaliable": dados["avaliable"]
+        })
+
+    return dicionario_rotas
+
+def compose_supergrafo_rotas():
+    response_a = requests.get(f"http://{servidor_a}/grafo_rotas")
+    response_b = requests.get(f"http://{servidor_b}/grafo_rotas")
+    response_c = requests.get(f"http://{servidor_c}/grafo_rotas")
+    if response_a.status_code == 200 and response_b.status_code == 200 and response_c.status_code == 200:
+        grafo_a = construir_grafo_from_file(response_a.json())
+        grafo_b = construir_grafo_from_file(response_b.json())
+        grafo_c = construir_grafo_from_file(response_c.json())
+        
+    g_ab = nx.compose(grafo_a, grafo_b)
+    g_abc = nx.compose(g_ab, grafo_c)
+    grafo_abc = grafo_para_dicionario(g_abc)
+    return grafo_abc     
+
 
 # # Função para construir supergrafo
-# def construir_supergrafo(origem, destino):
+# def construir_supergrafo(grafos_companhias):
 #     supergrafo = {}
-#     rotas_local = carregar_rotas()
-#     supergrafo.update(rotas_local)
-    
-#     for peer in raft_node.peers:
-#         try:
-#             response = requests.get(f"http://{peer}/grafo_rotas")
-#             if response.status_code == 200:
-#                 rotas_peer = response.json()
-#                 supergrafo.update(rotas_peer)
-#         except requests.RequestException as e:
-#             logging.error(f"Erro ao obter grafo de {peer}: {e}")
+
+#     for grafo in grafos_companhias:
+#         for origem, destinos in grafo.items():
+#             if origem not in supergrafo:
+#                 supergrafo[origem] = {}
+#             for destino, voos in destinos.items():
+#                 if destino not in supergrafo[origem]:
+#                     supergrafo[origem][destino] = []
+#                 for voo in voos:
+#                     # Adiciona o voo ao supergrafo
+#                     voo_info = {
+#                         "voo": voo["voo"],
+#                         "assentos": voo["assentos"],
+#                         "companhia": voo["companhia"],
+#                         "duracao": voo["duracao"],
+#                         "avaliable": voo["avaliable"]
+#                     }
+#                     supergrafo[origem][destino].append(voo_info)
+
 #     return supergrafo
 
-# def buscar_rotas(origem, destino, rotas):
-#     caminhos = []
-#     def dfs(current, target, path, visited):
-#         if current == target:
-#             caminhos.append(list(path))
-#             return
-#         if current not in rotas:
-#             return
-#         for next_dest, voos in rotas[current].items():
-#             if next_dest in visited:
-#                 continue
-#             for voo in voos:
-#                 if voo['avaliable']:
-#                     path.append({"voo": voo['voo'], "duracao": voo['duracao'], "next_dest": next_dest, "servidor": server_id})
-#                     visited.add(next_dest)
-#                     dfs(next_dest, target, path, visited)
-#                     path.pop()
-#                     visited.remove(next_dest)
-#     dfs(origem, destino, [], set([origem]))
-#     return caminhos
+def buscar_rotas(origem, destino, rotas):
+    caminhos = []
+    def dfs(current, target, path, visited):
+        if current == target:
+            caminhos.append(list(path))
+            return
+        if current not in rotas:
+            return
+        for next_dest, voos in rotas[current].items():
+            if next_dest in visited:
+                continue
+            for voo in voos:
+                if voo['avaliable']:
+                    path.append({"voo": voo['voo'], "duracao": voo['duracao'], "next_dest": next_dest, "servidor": server_id})
+                    visited.add(next_dest)
+                    dfs(next_dest, target, path, visited)
+                    path.pop()
+                    visited.remove(next_dest)
+    dfs(origem, destino, [], set([origem]))
+    return caminhos
 
-# # @app.route('/listar_supergrafo', methods=['GET'])
-# # def listar_supergrafo():
-# #     supergrafo = atualizar_supergrafo()
-# #     return jsonify(supergrafo)
+@app.route('/supergrafo', methods=['GET'])
+def get_supergrafo():
+    try:
+        supergrafo = compose_supergrafo_rotas()
 
-# # Endpoint POST /buscar_rotas
-# @app.route('/buscar_rotas', methods=['POST'])
-# def buscar_rotas_api():
-#     dados = request.json
-#     origem = dados.get('origem')
-#     destino = dados.get('destino')
+        return jsonify({"supergrafo": supergrafo}), 200
+    except Exception as e:
+        logging.error(f"Erro ao construir supergrafo: {e}")
+        return jsonify({"message": "Erro interno ao construir o supergrafo."}), 500
+
+
+# Endpoint POST /buscar_rotas
+@app.route('/buscar_rotas', methods=['POST'])
+def buscar_rotas_api():
+    dados = request.json
+    origem = dados.get('origem')
+    destino = dados.get('destino')
     
-#     if not origem or not destino:
-#         return jsonify({"message": "Origem e destino são necessários."}), 400
+    if not origem or not destino:
+        return jsonify({"message": "Origem e destino são necessários."}), 400
     
-#     supergrafo = construir_supergrafo(origem, destino)
-#     rotas = buscar_rotas(origem, destino, supergrafo)
+    supergrafo = compose_supergrafo_rotas()
+    rotas = buscar_rotas(origem, destino, supergrafo)
     
-#     return jsonify({"rotas": rotas}), 200
+    return jsonify({"rotas": rotas}), 200
 
 # # Função para atualizar a disponibilidade do voo
 # def atualizar_disponibilidade_voo(rotas, origem, destino, voo_selecionado):

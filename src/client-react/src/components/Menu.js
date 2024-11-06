@@ -11,7 +11,7 @@ const Menu = () => {
             <ul className="menu-options">
                 <li><Link to="/buscar_rotas">Buscar Rotas</Link></li>
                 <li><Link to="/reservar_assento">Comprar Passagem</Link></li>
-                <li><Link to="/ver_supergrafo">Ver Todas as Rotas</Link></li>
+                <li><Link to="/supergrafo">Ver Todas as Rotas</Link></li>
                 <li><Link to="/ver_supergrafo">Meus Pedidos</Link></li>
             </ul>
         </div>
