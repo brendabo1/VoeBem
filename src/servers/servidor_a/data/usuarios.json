@@ -1,3 +1,88 @@
-[{"id": "USR001", "nome": "Jo\u00e3o", "senha": "senha123", "pedidos": []}, 
-{"id": "USR002", "nome": "Maria", "senha": "senha456", "pedidos": [{"voos": [{"origem": "SSA", "destino": "IOS", "voo": "Voo AB912", "assento": "1A"}]}, {"voos": [{"origem": "SSA", "destino": "FEC", "voo": "Voo AB123", "assento": "2C"}, {"origem": "FEC", "destino": "BPS", "voo": "Voo AB529", "assento": "1B"}, {"origem": "BPS", "destino": "BRA", "voo": "Voo CB174", "assento": "1A"}]}, {"voos": [{"origem": "FEC", "destino": "SSA", "voo": "Voo BA321", "assento": "1A"}, {"origem": "SSA", "destino": "LEC", "voo": "Voo AC789", "assento": "1B"}]}]}, 
-{"id": "USR003", "nome": "Felipe", "senha": "senha123", "pedidos": []}, {"id": "USR004", "nome": "Ze", "senha": "senha456", "pedidos": []}, {"id": "USR005", "nome": "Ana Flavia", "senha": "senha123", "pedidos": []}, {"id": "USR006", "nome": "Pedro", "senha": "senha456", "pedidos": []}, {"id": "USR007", "nome": "Jo\u00e3o", "senha": "senha123", "pedidos": []}, {"id": "USR008", "nome": "Maria", "senha": "senha456", "pedidos": []}, {"id": "USR009", "nome": "Felipe", "senha": "senha123", "pedidos": []}, {"id": "USR010", "nome": "Ze", "senha": "senha456", "pedidos": []}, {"id": "USR011", "nome": "Ana Flavia", "senha": "senha123", "pedidos": []}, {"id": "USR012", "nome": "Pedro", "senha": "senha456", "pedidos": []}, {"id": "USR013", "nome": "Jo\u00e3o", "senha": "senha123", "pedidos": []}, {"id": "USR014", "nome": "Maria", "senha": "senha456", "pedidos": []}, {"id": "USR015", "nome": "Felipe", "senha": "senha123", "pedidos": []}, {"id": "USR016", "nome": "Ze", "senha": "senha456", "pedidos": []}, {"id": "USR017", "nome": "Ana Flavia", "senha": "senha123", "pedidos": []}, {"id": "USR018", "nome": "Pedro", "senha": "senha456", "pedidos": []}, {"id": "USR019", "nome": "Jo\u00e3o", "senha": "senha123", "pedidos": []}, {"id": "USR020", "nome": "Maria", "senha": "senha456", "pedidos": []}, {"id": "USR021", "nome": "Felipe", "senha": "senha123", "pedidos": []}, {"id": "USR022", "nome": "Ze", "senha": "senha456", "pedidos": []}, {"id": "USR023", "nome": "Ana Flavia", "senha": "senha123", "pedidos": []}, {"id": "USR024", "nome": "Pedro", "senha": "senha456", "pedidos": []}]
+[
+    {
+        "id": "USR001",
+        "nome": "Jo\u00e3o",
+        "senha": "senha123",
+        "pedidos": [],
+        "reservas": [
+            {
+                "reserva_id": "reserva_1730994942",
+                "trechos": [
+                    {
+                        "origem": "SSA",
+                        "destino": "BPS",
+                        "voo": "Voo AS916",
+                        "assento": "2B",
+                        "companhia": "A"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "USR002",
+        "nome": "Maria",
+        "senha": "senha456",
+        "pedidos": []
+    },
+    {
+        "id": "USR003",
+        "nome": "Felipe",
+        "senha": "senha123",
+        "pedidos": []
+    },
+    {
+        "id": "USR004",
+        "nome": "Ze",
+        "senha": "senha456",
+        "pedidos": []
+    },
+    {
+        "id": "USR005",
+        "nome": "Ana Flavia",
+        "senha": "senha123",
+        "pedidos": []
+    },
+    {
+        "id": "USR006",
+        "nome": "Pedro",
+        "senha": "senha456",
+        "pedidos": []
+    },
+    {
+        "id": "USR007",
+        "nome": "Jo\u00e3o",
+        "senha": "senha123",
+        "pedidos": []
+    },
+    {
+        "id": "USR008",
+        "nome": "Maria",
+        "senha": "senha456",
+        "pedidos": []
+    },
+    {
+        "id": "USR009",
+        "nome": "Felipe",
+        "senha": "senha123",
+        "pedidos": []
+    },
+    {
+        "id": "USR010",
+        "nome": "Ze",
+        "senha": "senha456",
+        "pedidos": []
+    },
+    {
+        "id": "USR011",
+        "nome": "Ana Flavia",
+        "senha": "senha123",
+        "pedidos": []
+    },
+    {
+        "id": "USR012",
+        "nome": "Pedro",
+        "senha": "senha456",
+        "pedidos": []
+    }   
+]

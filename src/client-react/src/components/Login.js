@@ -13,8 +13,17 @@ const Login = ({ onLoginSuccess }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
+
+        // try {
+        //     const userData = { userId, senha };  // Simulação de validação de login
+        //     login(userData);  // Define o usuário autenticado no contexto
+        //     navigate('/dashboard');  // Redireciona para o dashboard ao autenticar
+        // } catch (err) {
+        //     setError('Credenciais inválidas. Tente novamente.');
+        // }
         try {
             await login(userId, senha);
+            localStorage.setItem('userId', userId); 
             onLoginSuccess(userId); // Notifica o App.js que o login foi bem-sucedido
             navigate('/dashboard'); // Redireciona para o menu
         } catch (error) {

@@ -1,7 +1,9 @@
 // cliente-react/src/components/Supergrafo.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import './Supergrafo.css'; // Arquivo CSS para estilizar o componente
+
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 function Supergrafo() {
     const [supergrafo, setSupergrafo] = useState([]);
@@ -9,9 +11,9 @@ function Supergrafo() {
     const [error, setError] = useState(null);
 
     // Função para buscar o supergrafo do backend
-    const fetchSupergrafo = async () => {
+    const fetchSupergrafo = useCallback(async () => {
         try {
-            const response = await axios.get('http://localhost:5000/supergrafo');
+            const response = await axios.get(`${backendUrl}/supergrafo`);
             if (response.status === 200) {
                 const grafo = response.data.supergrafo;
                 const formattedGrafo = formatSupergrafo(grafo);
@@ -25,7 +27,11 @@ function Supergrafo() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchSupergrafo();
+    }, [fetchSupergrafo]);
 
     // Formatação do supergrafo para uma estrutura fácil de exibir
     const formatSupergrafo = (grafo) => {
@@ -46,11 +52,8 @@ function Supergrafo() {
         return formatted;
     };
 
-    useEffect(() => {
-        fetchSupergrafo();
-    }, []);
 
-    if (loading) return <p>Carregando supergrafo...</p>;
+    if (loading) return <p>Carregando rotas...</p>;
     if (error) return <p>{error}</p>;
 
     return (

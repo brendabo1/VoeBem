@@ -1,0 +1,17 @@
+/* cliente-react/src/components/Header.css */
+.header {
+    background-color: #007BFF; /* Azul padrão */
+    color: white;
+    padding: 50px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+.header h1 {
+    margin: 0;
+    font-size: 35px;
+}
+.header p {
+    margin: 10px 0 0;
+    font-size: 20px;
+}

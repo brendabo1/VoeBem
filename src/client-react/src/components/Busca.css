@@ -1,0 +1,94 @@
+/* cliente-react/src/styles/BuscaRota.css */
+.busca-rota-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.btn-primary {
+    background-color: #285484;
+    border: none;
+}
+
+
+.input-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.rotas-container {
+    margin-top: 20px;
+}
+
+.rota-item {
+    padding: 10px;
+    border: 1px solid #007BFF;
+    margin-bottom: 15px;
+    background-color: #e7f3ff;
+}
+
+.rota-item h4 {
+    margin: 0;
+}
+
+.loading {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.rotas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.rota-box {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.rota-content {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: center;
+}
+
+.voo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.linha-conexao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    width: 40px;
+    border-left: 2px solid #000;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.aeroporto {
+    text-align: center;
+}
+
+aeroporto strong {
+    font-size: 16px;
+}
+
+.aeroporto {
+    text-align: center;
+}
+
+.aeroporto strong {
+    font-size: 16px;
+}

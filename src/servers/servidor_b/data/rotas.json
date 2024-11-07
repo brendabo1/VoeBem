@@ -1,32 +1,196 @@
 {
-    "SSA": {
-        "FEC": [
+    "BPS": {
+        "BRA": [
             {
-                "voo": "Voo BR123",
+                "voo": "Voo AB174",
                 "assentos": [
                     {
-                        "cod": "1A",
-                        "avaliable": true
+                        "avaliable": false,
+                        "cod": "1A"
                     },
                     {
-                        "cod": "1B",
-                        "avaliable": false
+                        "avaliable": false,
+                        "cod": "1B"
                     },
                     {
-                        "cod": "2A",
-                        "avaliable": false
+                        "avaliable": true,
+                        "cod": "2A"
                     },
                     {
-                        "cod": "2B",
-                        "avaliable": true
+                        "avaliable": true,
+                        "cod": "2B"
                     },
                     {
-                        "cod": "2C",
-                        "avaliable": false
+                        "avaliable": false,
+                        "cod": "1C"
+                    }
+                ],
+                "companhia": "A",
+                "duracao": "2h15m",
+                "avaliable": true
+            }
+        ],
+        "FEC": [
+            {
+                "voo": "Voo BP957",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2B"
                     }
                 ],
                 "companhia": "B",
-                "duracao": "30m",
+                "duracao": "2h",
+                "avaliable": true
+            }
+        ]
+    },
+    "BRA": {
+        "BPS": [
+            {
+                "voo": "Voo AE493",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2B"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "1C"
+                    }
+                ],
+                "companhia": "A",
+                "duracao": "2h15m",
+                "avaliable": true
+            }
+        ],
+        "FEC": [
+            {
+                "voo": "Voo BH704",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2B"
+                    }
+                ],
+                "companhia": "B",
+                "duracao": "1h05m",
+                "avaliable": true
+            }
+        ]
+    },
+    "SSA": {
+        "BPS": [
+            {
+                "voo": "Voo AS916",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2B"
+                    }
+                ],
+                "companhia": "A",
+                "duracao": "2h",
+                "avaliable": true
+            }
+        ],
+        "GNM": [
+            {
+                "voo": "Voo AT737",
+                "assentos": [
+                    {
+                        "avaliable": true,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2B"
+                    }
+                ],
+                "companhia": "A",
+                "duracao": "1h45m",
+                "avaliable": true
+            }
+        ],
+        "IOS": [
+            {
+                "voo": "Voo AB912",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2B"
+                    }
+                ],
+                "companhia": "A",
+                "duracao": "2h",
                 "avaliable": true
             }
         ],
@@ -35,204 +199,138 @@
                 "voo": "Voo BO299",
                 "assentos": [
                     {
-                        "cod": "1A",
-                        "avaliable": true
+                        "avaliable": true,
+                        "cod": "1A"
                     },
                     {
-                        "cod": "1B",
-                        "avaliable": false
+                        "avaliable": false,
+                        "cod": "1B"
                     },
                     {
-                        "cod": "2A",
-                        "avaliable": false
+                        "avaliable": false,
+                        "cod": "2A"
                     },
                     {
-                        "cod": "2B",
-                        "avaliable": true
+                        "avaliable": true,
+                        "cod": "2B"
                     },
                     {
-                        "cod": "2C",
-                        "avaliable": false
+                        "avaliable": false,
+                        "cod": "2C"
                     }
                 ],
                 "companhia": "B",
                 "duracao": "40m",
                 "avaliable": true
             }
-        ]          
-    },
-    "FEC": {
-        "SSA": [
+        ],
+        "PAV": [
             {
-                "voo": "Voo BA321",
+                "voo": "Voo AN490",
                 "assentos": [
                     {
-                        "cod": "1A",
-                        "avaliable": false
+                        "avaliable": true,
+                        "cod": "1A"
                     },
                     {
-                        "cod": "1B",
-                        "avaliable": true
+                        "avaliable": false,
+                        "cod": "1B"
                     },
                     {
-                        "cod": "2A",
-                        "avaliable": true
+                        "avaliable": true,
+                        "cod": "2A"
                     },
                     {
-                        "cod": "2B",
-                        "avaliable": false
-                    },
-                    {
-                        "cod": "2C",
-                        "avaliable": true
+                        "avaliable": false,
+                        "cod": "2B"
                     }
                 ],
-                "companhia": "B",
-                "duracao": "45m",
+                "companhia": "A",
+                "duracao": "2h",
                 "avaliable": true
             }
         ],
-        "BRA": [
-            {
-                "voo": "Voo BL964",
-                "assentos": [
-                    {
-                        "cod": "1A",
-                        "avaliable": false
-                    },
-                    {
-                        "cod": "1B",
-                        "avaliable": true
-                    },
-                    {
-                        "cod": "2A",
-                        "avaliable": true
-                    },
-                    {
-                        "cod": "2B",
-                        "avaliable": false
-                    }
-                ],
-                "companhia": "B",
-                "duracao": "1h05m",
-                "avaliable": true
-            }
-        ],        
         "VDC": [
             {
-                "voo": "Voo BU337",
+                "voo": "Voo AC364",
                 "assentos": [
                     {
-                        "cod": "1A",
-                        "avaliable": true
+                        "avaliable": true,
+                        "cod": "1A"
                     },
                     {
-                        "cod": "1B",
-                        "avaliable": true
+                        "avaliable": true,
+                        "cod": "1B"
                     },
                     {
-                        "cod": "2A",
-                        "avaliable": false
+                        "avaliable": false,
+                        "cod": "2A"
                     },
                     {
-                        "cod": "2B",
-                        "avaliable": false
+                        "avaliable": false,
+                        "cod": "2B"
+                    }
+                ],
+                "companhia": "A",
+                "duracao": "2h20m",
+                "avaliable": true
+            }
+        ],
+        "FEC": [
+            {
+                "voo": "Voo BR123",
+                "assentos": [
+                    {
+                        "avaliable": true,
+                        "cod": "1A"
                     },
                     {
-                        "cod": "2C",
-                        "avaliable": true
+                        "avaliable": false,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2B"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2C"
                     }
                 ],
                 "companhia": "B",
-                "duracao": "1h35m",
+                "duracao": "30m",
                 "avaliable": true
             }
         ]
     },
-    "VDC": {
-        "FEC": [
+    "IOS": {
+        "VAL": [
             {
-                "voo": "Voo BZ321",
+                "voo": "Voo CF710",
                 "assentos": [
                     {
-                        "cod": "1A",
-                        "avaliable": true
+                        "avaliable": false,
+                        "cod": "1A"
                     },
                     {
-                        "cod": "1B",
-                        "avaliable": true
+                        "avaliable": false,
+                        "cod": "1B"
                     },
                     {
-                        "cod": "2A",
-                        "avaliable": false
+                        "avaliable": true,
+                        "cod": "2A"
                     },
                     {
-                        "cod": "2B",
-                        "avaliable": true
-                    },
-                    {
-                        "cod": "2C",
-                        "avaliable": true
+                        "avaliable": true,
+                        "cod": "2B"
                     }
                 ],
-                "companhia": "B",
-                "duracao": "1h20m",
-                "avaliable": true
-            }
-        ]        
-    },
-    "BRA": {
-        "FEC": [
-            {
-                "voo": "Voo BH704",
-                "assentos": [
-                    {
-                        "cod": "1A",
-                        "avaliable": false
-                    },
-                    {
-                        "cod": "1B",
-                        "avaliable": false
-                    },
-                    {
-                        "cod": "2A",
-                        "avaliable": true
-                    },
-                    {
-                        "cod": "2B",
-                        "avaliable": true
-                    }
-                ],
-                "companhia": "B",
-                "duracao": "1h05m",
-                "avaliable": true
-            }
-        ]
-    },    
-    "BPS": {
-        "FEC": [
-            {
-                "voo": "Voo BP957",
-                "assentos": [
-                    {
-                        "cod": "1A",
-                        "avaliable": false
-                    },
-                    {
-                        "cod": "1B",
-                        "avaliable": false
-                    },
-                    {
-                        "cod": "2A",
-                        "avaliable": true
-                    },
-                    {
-                        "cod": "2B",
-                        "avaliable": true
-                    }
-                ],
-                "companhia": "B",
-                "duracao": "2h",
+                "companhia": "C",
+                "duracao": "25m",
                 "avaliable": true
             }
         ]
@@ -243,24 +341,346 @@
                 "voo": "Voo BF162",
                 "assentos": [
                     {
-                        "cod": "1A",
-                        "avaliable": false
+                        "avaliable": false,
+                        "cod": "1A"
                     },
                     {
-                        "cod": "1B",
-                        "avaliable": false
+                        "avaliable": false,
+                        "cod": "1B"
                     },
                     {
-                        "cod": "2A",
-                        "avaliable": true
+                        "avaliable": true,
+                        "cod": "2A"
                     },
                     {
-                        "cod": "2B",
-                        "avaliable": true
+                        "avaliable": true,
+                        "cod": "2B"
                     }
                 ],
                 "companhia": "B",
                 "duracao": "2h",
+                "avaliable": true
+            }
+        ],
+        "FEC": [
+            {
+                "voo": "Voo CB445",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2A"
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "25m",
+                "avaliable": true
+            }
+        ]
+    },
+    "PAV": {
+        "BRA": [
+            {
+                "voo": "Voo CR217",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2B"
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "55m",
+                "avaliable": true
+            }
+        ]
+    },
+    "VDC": {
+        "FEC": [
+            {
+                "voo": "Voo BZ321",
+                "assentos": [
+                    {
+                        "avaliable": true,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2C"
+                    }
+                ],
+                "companhia": "B",
+                "duracao": "1h20m",
+                "avaliable": true
+            }
+        ],
+        "GNM": [
+            {
+                "voo": "Voo CS934",
+                "assentos": [
+                    {
+                        "avaliable": true,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2B"
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "25m",
+                "avaliable": true
+            }
+        ],
+        "TXF": [
+            {
+                "voo": "Voo CE108",
+                "assentos": [
+                    {
+                        "avaliable": true,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2A"
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "35m",
+                "avaliable": true
+            }
+        ]
+    },
+    "FEC": {
+        "BRA": [
+            {
+                "voo": "Voo BL964",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2B"
+                    }
+                ],
+                "companhia": "B",
+                "duracao": "1h05m",
+                "avaliable": true
+            }
+        ],
+        "SSA": [
+            {
+                "voo": "Voo BA321",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2C"
+                    }
+                ],
+                "companhia": "B",
+                "duracao": "45m",
+                "avaliable": true
+            }
+        ],
+        "VDC": [
+            {
+                "voo": "Voo BU337",
+                "assentos": [
+                    {
+                        "avaliable": true,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "2B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2C"
+                    }
+                ],
+                "companhia": "B",
+                "duracao": "1h35m",
+                "avaliable": true
+            }
+        ],
+        "LEC": [
+            {
+                "voo": "Voo CT654",
+                "assentos": [
+                    {
+                        "avaliable": true,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2A"
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "25m",
+                "avaliable": true
+            }
+        ]
+    },
+    "VAL": {
+        "IOS": [
+            {
+                "voo": "Voo CN576",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2B"
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "25m",
+                "avaliable": true
+            }
+        ],
+        "TXF": [
+            {
+                "voo": "Voo CB801",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2B"
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "1h05m",
+                "avaliable": true
+            }
+        ]
+    },
+    "TXF": {
+        "IOS": [
+            {
+                "voo": "Voo CG432",
+                "assentos": [
+                    {
+                        "avaliable": false,
+                        "cod": "1A"
+                    },
+                    {
+                        "avaliable": false,
+                        "cod": "1B"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2A"
+                    },
+                    {
+                        "avaliable": true,
+                        "cod": "2B"
+                    }
+                ],
+                "companhia": "C",
+                "duracao": "35m",
                 "avaliable": true
             }
         ]

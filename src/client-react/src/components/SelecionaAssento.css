@@ -1,0 +1,101 @@
+/* Define o estilo básico para a página */
+.seleciona-assento-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: auto;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilo para cada caixa de voo (trecho) */
+.voo-box {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.voo-box h3 {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.voo-box p {
+    margin: 8px 0;
+    color: #555;
+}
+
+/* Estilo para os assentos disponíveis */
+.assentos-disponiveis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.assento {
+    width: 40px;
+    height: 40px;
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.assento:hover {
+    background-color: #ccc;
+}
+
+.assento.selecionado {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+/* Estilo para o botão de confirmar compra */
+.btn-primary {
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    margin: 20px auto;
+    padding: 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-primary:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Estilo de mensagem de carregamento */
+.loading-message {
+    text-align: center;
+    color: #777;
+    margin-top: 15px;
+}
+
+/* Estilo de erro */
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 15px;
+}
