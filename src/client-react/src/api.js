@@ -49,10 +49,6 @@ export const confirmarCompra = async (assentosSelecionados) => {
     return response.data;
 };
 
-// export const enviarRotaSelecionada = async (rota) => {
-//     const response = await axios.post('/comprar_rota', { rota });
-//     return response.data;
-// };
 
 export const realizarCompra = async (listaDeTrechos, userId) => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/comprar_passagem`;
@@ -73,15 +69,4 @@ export const obterPedidos = async (userId) => {
     }
 };
 
-// export const comprarPassagem = async (user_id, trechos) => {
-//     try {
-//         const response = await api.post('/comprar_passagem', { user_id, trechos });  
-//         return response.data.message;
-//     } catch (error) {
-//         throw new Error(error.response?.data.message || "Erro ao comprar passagem");
-//     }
-// };
 
-// export const reservarAssentos = (origem, destino, assentos) => {
-//     return api.post('/reservar_assentos', { origem, destino, assentos });  // Use api.post ao invés de axios.post
-// };

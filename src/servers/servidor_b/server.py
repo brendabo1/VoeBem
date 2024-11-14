@@ -7,7 +7,6 @@ import requests
 import logging
 import os
 from dotenv import load_dotenv
-from raft_algoritmo import RaftNode
 from flask_cors import CORS
 import networkx as nx
 
@@ -19,17 +18,6 @@ USUARIOS_FILE = "data/usuarios.json"
 ROTAS_FILE = "data/rotas.json"
 load_dotenv()
 
-# def garantir_url_valida(url):
-#     if not url.startswith("http://") and not url.startswith("https://"):
-#         return f"http://{url}"  # Adiciona http:// se faltar
-#     return url
-
-# servidor_a = garantir_url_valida(os.getenv('SERVIDOR_A'))
-# servidor_b = garantir_url_valida(os.getenv('SERVIDOR_B'))
-# servidor_c = garantir_url_valida(os.getenv('SERVIDOR_C'))
-# print(f"Servidor A corrigido: {servidor_a}")
-# print(f"Servidor B corrigido: {servidor_b}")
-# print(f"Servidor C corrigido: {servidor_c}")
 
 # Recupera as variáveis de ambiente
 servidor_a = os.getenv('SERVIDOR_A')
@@ -37,9 +25,12 @@ servidor_b = os.getenv('SERVIDOR_B')
 servidor_c = os.getenv('SERVIDOR_C')
 
 peers = [servidor_a, servidor_b, servidor_c]
-#server_id = os.getenv("SERVER_ID")
-#outros_servidores = os.getenv("OUTROS_SERVIDORES").split(",")
-#raft_node = RaftNode(server_id=server_id, peers=outros_servidores)
+
+servidores = {
+    'A': servidor_a,
+    'B': servidor_b,
+    'C': servidor_c
+}
 
 # Configuração de log
 logging.basicConfig(filename="server.log", level=logging.INFO, format="%(asctime)s - %(message)s")
@@ -85,15 +76,15 @@ def login():
 
 
 # Função para anexar o pedido ao usuário
-def anexar_pedido_usuario(user_id, reserva, arquivo_usuarios):
-    usuarios = carregar_usuarios()
-    for usuario in usuarios:
-        if usuario["id"] == user_id:
-            if "reservas" not in usuario:
-                usuario["reservas"] = []
-            usuario["reservas"].append(reserva)
-            salvar_usuarios(usuarios)
-            return
+# def anexar_pedido_usuario(user_id, reserva):
+#     usuarios = carregar_usuarios()
+#     for usuario in usuarios:
+#         if usuario["id"] == user_id:
+#             if "reservas" not in usuario:
+#                 usuario["reservas"] = []
+#             usuario["reservas"].append(reserva)
+#             salvar_usuarios(usuarios)
+#             return
 
 # Endpoint GET /grafo_rotas
 @app.route('/grafo_rotas', methods=['GET'])
@@ -172,30 +163,6 @@ def compose_supergrafo_rotas():
     grafo_abc = grafo_para_dicionario(g_abc)
     return grafo_abc     
 
-
-# # Função para construir supergrafo
-# def construir_supergrafo(grafos_companhias):
-#     supergrafo = {}
-
-#     for grafo in grafos_companhias:
-#         for origem, destinos in grafo.items():
-#             if origem not in supergrafo:
-#                 supergrafo[origem] = {}
-#             for destino, voos in destinos.items():
-#                 if destino not in supergrafo[origem]:
-#                     supergrafo[origem][destino] = []
-#                 for voo in voos:
-#                     # Adiciona o voo ao supergrafo
-#                     voo_info = {
-#                         "voo": voo["voo"],
-#                         "assentos": voo["assentos"],
-#                         "companhia": voo["companhia"],
-#                         "duracao": voo["duracao"],
-#                         "avaliable": voo["avaliable"]
-#                     }
-#                     supergrafo[origem][destino].append(voo_info)
-
-#     return supergrafo
 
 def buscar_rotas_antigo(origem, destino, rotas):
     caminhos = []
@@ -298,24 +265,6 @@ def buscar_rotas_api():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# @app.route('/verificar_assentos', methods=['POST'])
-# def verificar_assentos():
-#     rota = request.json.get("rota", [])
-    
-#     if not rota:
-#         return jsonify({"erro": "Rota não informada."}), 400
-
-#     assentos_disponiveis = []
-#     for voo in rota:
-#         voo_id = voo.get("voo")
-#         if voo_id:
-#             assentos = consultar_assentos_disponiveis(voo_id)
-#             assentos_disponiveis.append({
-#                 "voo": voo_id,
-#                 "assentos_disponiveis": assentos
-#             })
-
-#     return jsonify(assentos_disponiveis)
 
 def consultar_assentos_disponiveis(rotas, voos_selecionados, arquivo_grafo):
     """
@@ -352,31 +301,6 @@ def consultar_assentos_disponiveis(rotas, voos_selecionados, arquivo_grafo):
 
     return assentos_disponiveis
 
-
-# @app.route('/selec_assento', methods=['POST'])
-# def selecionaAssentos():
-#     rota = request.json.get("rota", [])
-#     assentos_disponiveis = []
-#     for trecho in rota:
-#         origem = trecho.get("origem")
-#         destino = trecho.get("next_dest")
-#         voo_id = trecho.get("voo")
-#         # Simula busca de assentos disponíveis
-#         assentos = ["A1", "A2", "B1", "B2"]  # Exemplo de assentos disponíveis
-#         assentos_disponiveis.append({
-#             "voo": voo_id,
-#             "origem": origem,
-#             "destino": destino,
-#             "assentos": assentos
-#         })
-#     return jsonify(assentos_disponiveis)
-
-@app.route('/confirmar_compra', methods=['POST'])
-def confirmar_compra():
-    assentos_selecionados = request.json.get("assentos", {})
-    # Aqui, adicionar lógica para processar a compra
-    return jsonify({"mensagem": "Compra confirmada com sucesso!"})
-
 # Função para atualizar a disponibilidade do voo
 def atualizar_disponibilidade_voo(rotas, origem, destino, voo_selecionado):
     if origem in rotas and destino in rotas[origem]:
@@ -388,6 +312,49 @@ def atualizar_disponibilidade_voo(rotas, origem, destino, voo_selecionado):
                 voo['avaliable'] = voo_disponivel
                 break
 
+# Função para atualizar o arquivo de usuários com a reserva completa
+def anexar_pedido_usuario(user_id, reserva_completa):
+    usuarios = carregar_usuarios()
+    for usuario in usuarios:
+        if usuario["id"] == user_id:
+            usuario.setdefault("reservas", []).append(reserva_completa)
+            break
+    # else:
+    #     usuarios.append({
+    #         "id": user_id,
+    #         "reservas": [reserva_completa]
+    #     })
+    salvar_usuarios(usuarios)
+
+# Função de sincronização para replicar a reserva completa em todos os servidores
+def replicar_reserva(user_id, reserva_completa):
+    sucesso = True
+    for servidor in servidores.values():
+        try:
+            response = requests.post(f"{servidor}/sincronizar_reserva", json={
+                "user_id": user_id,
+                "reserva": reserva_completa
+            })
+            if response.status_code != 200:
+                sucesso = False
+        except Exception as e:
+            print(f"Erro ao sincronizar com {servidor}: {e}")
+            sucesso = False
+    return sucesso
+
+# Endpoint para sincronizar reserva em cada servidor
+@app.route('/sincronizar_reserva', methods=['POST'])
+def sincronizar_reserva():
+    dados = request.json
+    user_id = dados.get('user_id')
+    reserva = dados.get('reserva')
+    
+    if not user_id or not reserva:
+        return jsonify({"message": "Dados de sincronização incompletos."}), 400
+    
+    # Atualiza o arquivo de usuários local
+    anexar_pedido_usuario(user_id, reserva)
+    return jsonify({"message": "Reserva sincronizada com sucesso!"}), 200
 
 # Implementação do 3PC
 
@@ -499,7 +466,7 @@ def do_commit():
                 'reserva_id': reserva_id,
                 'trechos': trechos
             }
-            anexar_pedido_usuario(user_id, pedido_completo, USUARIOS_FILE)
+            anexar_pedido_usuario(user_id, pedido_completo)
             return jsonify({"status": "sucesso"}), 200
         else:
             return jsonify({"status": "ERROR"}), 409
@@ -520,31 +487,35 @@ def abort():
 def comprar_passagem():
     dados = request.json
     user_id = dados.get('user_id')
-    trechos = dados.get('trechos')  # Lista de trechos: [{'origem': 'SSA', 'destino': 'PAV', 'voo': 'Voo AN490', 'assento': '1A', 'servidor': 'servidorA'}, ...]
+    trechos = dados.get('trechos')  
     
     if not user_id or not trechos:
         return jsonify({"message": "Usuário e trechos são necessários."}), 400
     
     reserva_id = f"reserva_{int(time.time())}"
-    servidores = {
-    'A': servidor_a,
-    'B': servidor_b,
-    'C': servidor_c
-    }
+    # servidores = {
+    # 'A': servidor_a,
+    # 'B': servidor_b,
+    # 'C': servidor_c
+    # }
 
-    servidores_involvidos = list(set(
+    servidores_envolvidos = list(set(
         servidores[trecho['companhia']] for trecho in trechos if trecho['companhia'] in servidores
     ))
-    print(servidores_involvidos)
+    print(servidores_envolvidos)
+    reserva_completa = {
+        "reserva_id": reserva_id,
+        "trechos": trechos
+    }
     try:
         # Fase 1: Prepare
         votos = {}
-        for servidor in servidores_involvidos:
-            trecho_servidor = [t for t in trechos if servidores[t['companhia']] == servidor]
+        for servidor in servidores_envolvidos:
+            #trecho_servidor = [t for t in trechos if servidores[t['companhia']] == servidor]
             response = requests.post(f"{servidor}/prepare", json={
                 "reserva_id": reserva_id,
                 "user_id": user_id,
-                "trechos": trecho_servidor
+                "trechos": trechos
             })
             print(response)
             if response.status_code == 200 and response.json().get("status") == "OK":
@@ -556,7 +527,7 @@ def comprar_passagem():
         if all(v == "commit" for v in votos.values()):
             # Fase 2: Pre-Commit
             pre_commits = {}
-            for servidor in servidores_involvidos:
+            for servidor in servidores_envolvidos:
                 response = requests.post(f"{servidor}/pre_commit", json={"reserva_id": reserva_id})
                 if response.status_code == 200 and response.json().get("status") == "ACK":
                     pre_commits[servidor] = "ACK"
@@ -565,25 +536,31 @@ def comprar_passagem():
             
             if all(v == "ACK" for v in pre_commits.values()):
                 # Fase 3: Do Commit
-                for servidor in servidores_involvidos:
+                for servidor in servidores_envolvidos:
                     requests.post(f"{servidor}/do_commit", json={
                         "reserva_id": reserva_id,
                         "user_id": user_id
                     })
-                return jsonify({"message": "Compra realizada com sucesso!"}), 200
+                # Sincronizar a reserva completa com todos os servidores
+                if replicar_reserva(user_id, reserva_completa):
+                    return jsonify({"message": "Compra realizada e sincronizada com sucesso!"}), 200
+                else:
+                    return jsonify({"message": "Compra realizada, mas falha ao sincronizar."}), 500
+            # else:
+            #     return jsonify({"message": "Compra realizada com sucesso!"}), 200
             else:
                 # Abort
-                for servidor in servidores_involvidos:
+                for servidor in servidores_envolvidos:
                     requests.post(f"{servidor}/abort", json={"reserva_id": reserva_id})
                 return jsonify({"message": "Compra abortada devido a votos negativos na fase de pre-commit."}), 500
         else:
             # Abort
-            for servidor in servidores_involvidos:
+            for servidor in servidores_envolvidos:
                 requests.post(f"{servidor}/abort", json={"reserva_id": reserva_id})
             return jsonify({"message": "Compra abortada devido a votos negativos na fase de prepare."}), 500
     except Exception as e:
         # Abort em caso de exceção
-        for servidor in servidores_involvidos:
+        for servidor in servidores_envolvidos:
             try:
                 requests.post(f"/{servidor}/abort", json={"reserva_id": reserva_id})
             except:
@@ -591,21 +568,19 @@ def comprar_passagem():
         return jsonify({"message": f"Compra abortada devido a erro: {str(e)}"}), 500
 
 
-# # Endpoints do Raft
-# @app.route('/request_vote', methods=['POST'])
-# def request_vote():
-#     data = request.json
-#     response = raft_node.handle_request_vote(data["term"], data["candidate_id"])
-#     return jsonify(response)
+# Rota para obter os pedidos de um usuário específico
+@app.route('/pedidos/<user_id>', methods=['GET'])
+def obter_pedidos(user_id):
+    usuarios = carregar_usuarios()
+    usuario = next((u for u in usuarios if u['id'] == user_id), None)
 
-# @app.route('/heartbeat', methods=['POST'])
-# def heartbeat():
-#     data = request.json
-#     response = raft_node.handle_heartbeat(data["term"], data["leader_id"])
-#     return jsonify(response)
+    if usuario:
+        # Retornar as reservas do usuário
+        return jsonify({"pedidos": usuario.get('reservas', [])}), 200
+    else:
+        return jsonify({"message": "Usuário não encontrado"}), 404
+
 
 # Início do servidor
 if __name__ == '__main__':
-    #port = int(os.getenv("PORT", 5000))
     app.run(host="0.0.0.0", port=5002, debug=True)
-    # app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))

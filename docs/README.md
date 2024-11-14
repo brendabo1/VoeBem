@@ -40,8 +40,15 @@ Para facilitar a comunicação entre os nós, o sistema utiliza APIs REST, uma i
 
 ### Protocolo de Comunicação
 
-|Metodo| Endpoint| Parametros| Response|
-|sads|
+| Método   |  Endpoint  | Parâmetros |  Response | Descrição |
+---------- |-----------|-------------|---------- |-----------|
+|  POST    |   /login     |    | <details> <summary>200</summary> status: sucesso</details>      |
+|  POST    |   /buscar_rotas     | origem, destino    |      |
+|  GET     |   /grafo_rotas     | None    |      |
+|  GET     |   /supergrafo     | None    |      |
+|  POST    |   /comprar_passagem      |  user_id, trechos  |      |
+|  GET    |   /pedidos/<user_id>      | user_id    |      |
+
 
 ### Roteamento
 

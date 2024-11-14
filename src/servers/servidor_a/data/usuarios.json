@@ -6,13 +6,20 @@
         "pedidos": [],
         "reservas": [
             {
-                "reserva_id": "reserva_1730994942",
+                "reserva_id": "reserva_1731557862",
                 "trechos": [
                     {
+                        "origem": "FEC",
+                        "destino": "SSA",
+                        "voo": "Voo BA321",
+                        "assento": "2C",
+                        "companhia": "B"
+                    },
+                    {
                         "origem": "SSA",
-                        "destino": "BPS",
-                        "voo": "Voo AS916",
-                        "assento": "2B",
+                        "destino": "VDC",
+                        "voo": "Voo AC364",
+                        "assento": "1B",
                         "companhia": "A"
                     }
                 ]
@@ -84,5 +91,5 @@
         "nome": "Pedro",
         "senha": "senha456",
         "pedidos": []
-    }   
+    }
 ]
