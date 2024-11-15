@@ -91,7 +91,6 @@ No protocolo 3PC, a operação é dividida em três fases: Prepare (Preparação
 Na fase de preparação ou votação, o coordenador inicia a transação distribuída e consulta cada nó participante, solicitando se estão prontos para realizar o commit. Cada nó verifica a disponibilidade do recurso para a transação solicitada e se consegue concluir a operação de forma consistente, respondendo com "commit" (caso esteja pronto) ou "abort" (caso contrário). Se todos os nós responderem com "commit", a transação prossegue para a próxima fase. Caso algum nó vote "abort", a transação é cancelada, e o coordenador informa a todos os nós para manterem o estado anterior (Tanenbaum & Van Steen, 2016).
 
 2. Fase Pre-Commit
-
 Se todos os participantes responderam positivamente ("sim" ou "commit"), o coordenador envia um comando de pré-comprometimento (pre-commit) a cada nó, solicitando que se preparem para o commit. Nesta fase, os nós registram um ponto de recuperação para garantir que poderão finalizar a transação, mesmo se ocorrer uma falha temporária do coordenador.
 Esse passo adicional é o diferencial do 3PC, pois garante que os participantes estejam prontos para completar ou abortar a transação caso o coordenador fique inacessível. Isso reduz a probabilidade de deadlock ou inconsistência de estado entre os nós (Gray & Reuter, 1993; Coulouris et al., 2013).
 
@@ -118,12 +117,20 @@ Por meio de logs e do armazenamento de reservas pendentes, a plataforma permite 
 
 ### Confiabilidade da Solução
 O sistema possui rotinas de tolerância a falhas para que a transação não seja prejudicada por uma falha no coordenador ou dos participantes. No protocolo *Three Phase Commit* implementado, a fase intermediária *pre-commit* garante que todos os nós tenham registros e estejam preparados para seguir para o próximo estágio mesmo em caso de falha na conexão do coordenador. A falha temporária do coordenador não compromete a compra de passagens, pois os estados dos participantes registrados são recuperados e a transação concluída. Desse modo, cada participante é capaz de realizar o commit e finalizar a transação com maior independência. 
+
 Também, os pontos de recuperação são fundamentais para que, caso os servidores apresentem exceções durante etapas críticas, como a fase de votação ou execução do commit, a transação seja cancelada e a confiabilidade e consistência do sistema mantidos.
 
 ## Resultados e Discussões
 
 ### Desempenho
 ### Docker
+O sistema Voe Bem implementa uma API REST utilizando o framework Flask na versão 3.0.3 e o Gunicorn server para otimizar a execução multithread, além da bibloteca React para o desenvolvimento da interface gráfica para o cusuário.  
+<!-- A API dispõe dos métodos remotos para o algoritmo de enlace, atualização do grafo e execução do 2PC. Cada servidor possui sua própria API, assim como seu banco de dados independente. Os bancos de dados foram implementados com o MongoDB, um modelo não relacional, escalável e que possui fácil integração com a linguagem Python.
+
+O Docker foi utilizado no projeto para garantir sua portabilidade possibilitando a execução do software em qualquer computador que possua o software instalado. Contêineres distintos foram desenvolvidos para a aplicação do cliente, para o banco de dados do servidor e para cada servidor do cluster. O banco de dados utiliza um container com a imagem do MongoDB Community, e o cliente e o servidor utilizam containers com uma imagem customizada do Python 3.12.4.
+
+O uso da plataforma Docker otimiza a execução do sistema ao dispensar a configuração de cada máquina física. Através de dois containers, sendo um para o servidor e um para o cliente, a aplicação pode ser executa em diferentes máquinas com a plataforma Docker. Existe um Dockerfile para a execução do servidor, bem como um Dockerfile para o cliente.-->
+
 
 ## Conclusão
 

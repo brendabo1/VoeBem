@@ -31,7 +31,7 @@ Thumbs.db
 .env.production.local
 
 # Arquivo de ambiente principal
-.env
+# .env
 
 # Cache do Yarn
 .yarn/
