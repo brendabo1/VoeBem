@@ -7,7 +7,6 @@ import requests
 import logging
 import os
 from dotenv import load_dotenv
-from raft_algoritmo import RaftNode
 from flask_cors import CORS
 import networkx as nx
 
