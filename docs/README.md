@@ -13,7 +13,7 @@ Neste contexto, o desenvolvimento de um sistema distribuído de venda de passage
 
 Pensando nisso, foi proposto aos alunos do curso de Engenharia de Computação da Universidade Estadual de Feira de Santana (UEFS) o desenvolvimento de um sistema distribuido para venda de passagens aéreas. Este relatório visa descrever objetivamente o desenvolvimento de tal solução em que os clientes, através da internet, podem comprar passagens com várias conexões, podendo cada trecho pertencer a companhia diferentes. Para tal, a Voe Bem possui uma arquitetura descentralizada em que cada companhia mantém seu próprio servidor e banco de dados local, sendo a comunicação entre os servidores realizada através de APIs REST. Diante dos requisitos e funcionalidades do sistema, soluções para transações que afetam recursos distrubídos, como *Three Phase Commit (3PC)*, e de consenso foram utilizados para garantir eficiência e confiabilidade na reserva de passagens. Ao final do desenvolvimento, a aplicação foi virtualizada por meio de contêineres Docker.
 
-## Metodologia
+## Sobre o Sistema
 
 Para solucionar o problema proposto, algoritmos de transação distribuída, consenso e a arquitetura da API REST foram analisados e adotados. A linguagem de programação Pyhton foi escolhida para implementação juntamente com o framework Flask e a bibloteca React no frontend.
 
@@ -85,7 +85,7 @@ Portanto, através da execução do algoritmo, o sistema mantém uma visão unif
 ### Concorrência Distribuída
 Para a realização da compra de passegem na arquitetura distribuída o *Three-Phase Commit Protocol* (3PC), ou protocolo de três fases, foi utilizado. Este método de coordenação de transações distribuídas visa garantir a consistência dos dados em sistemas distribuídos, uma vez que uma transação distribuída só ocorre quando todos os participantes confirmam as alterações e é cancelada caso algum dos nós não confirme ou apresente falhas. Também, as operações distribídas incluiram *locks* para garantir a consistência e controle de concorrência no sistema multithread implementado.
 
-No protocolo 3PC, a operação é dividida em três fases: Prepare (Preparação), Pre-Commit (Pré-Comprometimento) e Do Commit (Execução do Commit). Em qualquer uma das etapas, uma resposta negativativa prejudicial à transação dispara o cancelamento ou abort em todos os servidores, que retornam ao último estado antes da operação de compra iniciada. 
+No protocolo 3PC, a operação é dividida em três fases: Prepare (Preparação), Pre-Commit (Pré-Comprometimento) e Do Commit (Execução do Commit) como é ilustrado na Figura 2. Em qualquer uma das etapas, uma resposta negativativa prejudicial à transação dispara o cancelamento ou abort em todos os servidores, que retornam ao último estado antes da operação de compra iniciada. 
 
 1. Fase de Preparação
 Na fase de preparação ou votação, o coordenador inicia a transação distribuída e consulta cada nó participante, solicitando se estão prontos para realizar o commit. Cada nó verifica a disponibilidade do recurso para a transação solicitada e se consegue concluir a operação de forma consistente, respondendo com "commit" (caso esteja pronto) ou "abort" (caso contrário). Se todos os nós responderem com "commit", a transação prossegue para a próxima fase. Caso algum nó vote "abort", a transação é cancelada, e o coordenador informa a todos os nós para manterem o estado anterior (Tanenbaum & Van Steen, 2016).
@@ -97,7 +97,7 @@ Esse passo adicional é o diferencial do 3PC, pois garante que os participantes 
 3. Fase Do Commit (Decisão)
 Na última fase, o coordenador emite o comando de commit definitivo a todos os nós. Se o coordenador falhar antes de enviar esse comando, os participantes podem se comunicar diretamente e, com base na fase de pre-commit, decidir prosseguir ou abortar a operação.
 Esse mecanismo de recuperação torna o 3PC mais robusto que o 2PC, já que o estado de pre-commit evita que os nós fiquem indefinidamente bloqueados (Bernstein & Newcomer, 2009).
-Nesta última etapa, o sistema Voe Bem também implementa 
+Nesta última etapa, o sistema Voe Bem também implementa o consenso da passagem comprada por um usuário para que os servidores de cada companhia possuam dados atualizados em tempo real após uma compra.
 
 No sistema desenvolvido, o coordenador corresponde ao servidor no qual o cliente se conectou e requisitou o serviço. Além disso, na etapa *do commit* a reserva bem sucedida é replicada para todos os nós com o itnuito de garantir o consenso de informações dos usuários entre todos os nós.
 Por meio de logs e do armazenamento de reservas pendentes, a plataforma permite uma maior resiliência a falhas do coordenador e reduz o risco de deadlocks entre os nós. Dessa maneira, o protocolo 3PC atende aos requisitos do sistema de maneira eficiênte e robusta.
@@ -109,7 +109,7 @@ Por meio de logs e do armazenamento de reservas pendentes, a plataforma permite 
     <figcaption>
       <p align="center"> 
 
-**Figura 2** - 
+**Figura 2** - Fluxo de fases no Three Phase Commit
     </figcaption>
   </figure>
 </div>
@@ -118,21 +118,15 @@ Por meio de logs e do armazenamento de reservas pendentes, a plataforma permite 
 ### Confiabilidade da Solução
 O sistema possui rotinas de tolerância a falhas para que a transação não seja prejudicada por uma falha no coordenador ou dos participantes. No protocolo *Three Phase Commit* implementado, a fase intermediária *pre-commit* garante que todos os nós tenham registros e estejam preparados para seguir para o próximo estágio mesmo em caso de falha na conexão do coordenador. A falha temporária do coordenador não compromete a compra de passagens, pois os estados dos participantes registrados são recuperados e a transação concluída. Desse modo, cada participante é capaz de realizar o commit e finalizar a transação com maior independência. 
 
-Também, os pontos de recuperação são fundamentais para que, caso os servidores apresentem exceções durante etapas críticas, como a fase de votação ou execução do commit, a transação seja cancelada e a confiabilidade e consistência do sistema mantidos.
+Os pontos de recuperação são fundamentais para que, caso os servidores apresentem exceções durante etapas críticas, como a fase de votação ou execução do commit, a transação seja cancelada e a confiabilidade e consistência do sistema mantidos.
 
-## Resultados e Discussões
+Também, após cada operação de compra, o banco de usuários de todas as companhias é atualizado via API garantindo o consenso de dados entre os servidores.
 
-### Desempenho
 ### Docker
-O sistema Voe Bem implementa uma API REST utilizando o framework Flask na versão 3.0.3 e o Gunicorn server para otimizar a execução multithread, além da bibloteca React para o desenvolvimento da interface gráfica para o cusuário.  
-<!-- A API dispõe dos métodos remotos para o algoritmo de enlace, atualização do grafo e execução do 2PC. Cada servidor possui sua própria API, assim como seu banco de dados independente. Os bancos de dados foram implementados com o MongoDB, um modelo não relacional, escalável e que possui fácil integração com a linguagem Python.
+O sistema Voe Bem implementa uma API REST utilizando o framework Flask na versão 3.0.3, Python 3.12 e o Gunicorn server para otimizar a execução multithread, além da bibloteca React para o desenvolvimento da interface gráfica para o cusuário.
 
-O Docker foi utilizado no projeto para garantir sua portabilidade possibilitando a execução do software em qualquer computador que possua o software instalado. Contêineres distintos foram desenvolvidos para a aplicação do cliente, para o banco de dados do servidor e para cada servidor do cluster. O banco de dados utiliza um container com a imagem do MongoDB Community, e o cliente e o servidor utilizam containers com uma imagem customizada do Python 3.12.4.
+O uso da plataforma Docker otimiza a execução do sistema ao dispensar a configuração de cada máquina física. Através de um container para o cliente e um container servidor para cada companhia, a aplicação pode ser executa em diferentes máquinas com a plataforma Docker. 
 
-O uso da plataforma Docker otimiza a execução do sistema ao dispensar a configuração de cada máquina física. Através de dois containers, sendo um para o servidor e um para o cliente, a aplicação pode ser executa em diferentes máquinas com a plataforma Docker. Existe um Dockerfile para a execução do servidor, bem como um Dockerfile para o cliente.-->
-
-
-## Conclusão
 
 ## Referências
 
